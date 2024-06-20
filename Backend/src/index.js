@@ -13,7 +13,7 @@ app.use(morgan('common'));
 app.get("/getusers", async (req, res, next) => {
 
     setTimeout(async () => {
-        await axios.get("https://random-data-api.com/api/v2/users") // 'https://random-data-api.com/documentation'
+        await axios.get("https://random-data-api.com/api/v2/users?size=10") // 'https://random-data-api.com/documentation'
             .then((result) => {
                 console.log(result.data)
 

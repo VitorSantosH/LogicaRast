@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import connect from "../../../../../connect";
+import "./Home.css";
 
 const Home = (props) => {
 
@@ -14,8 +15,6 @@ const Home = (props) => {
 
         if (!state.loaded && !loading) {
             getUsers();
-
-
         }
 
     }, [state.loaded])
@@ -29,9 +28,7 @@ const Home = (props) => {
             console.log(ret)
 
             let NewUsers = state.users
-            NewUsers.push(ret)
-
-
+            NewUsers.push(...ret)
 
             return setState(prevState => ({
                 ...prevState,
@@ -53,12 +50,43 @@ const Home = (props) => {
 
     }
 
+    const CreatUsersCards = () => {
+        let container = [];
+
+        for (let index = 0; index < state.users.length; index++) {
+
+            let user = state.users[index];
+
+            let card = (
+                <div className="card" key={user.id + "" + index}>
+                    <h3>{user.first_name}</h3>
+                    <p>{user.id}</p>
+                    <img src={user.avatar} alt="" />
+                </div>
+            )
+
+            container.push(card)
+
+        }
+
+        return container;
+
+    }
+
     return (
         <div className="Home"
             onClick={e => {
                 console.log(state)
             }}>
-            Home
+            <h1>
+                Home
+            </h1>
+
+            <div className="listUsers">
+                {state.users.length > 0 && (
+                    CreatUsersCards()
+                )}
+            </div>
         </div>
     )
 }
