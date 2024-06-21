@@ -1,15 +1,21 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import connect from "../../../../../connect";
+import connect from "../../Api/connect";
 import "./Home.css";
+import EditImg from "../../assets/EditIcon.svg";
+import EditUserModal from '../EditarUser/EditUserModal'
+import Modal from 'react-modal';
 
 const Home = (props) => {
 
     const [state, setState] = useState({
         loaded: false,
-        users: []
+        users: [],
+        user: {}
     })
     const [loading, setLoading] = useState(false);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
 
     useEffect(() => {
 
@@ -17,7 +23,7 @@ const Home = (props) => {
             getUsers();
         }
 
-    }, [state.loaded])
+    }, [])
 
     const getUsers = async (props) => {
 
@@ -57,36 +63,69 @@ const Home = (props) => {
 
             let user = state.users[index];
 
-            let card = (
-                <div className="card" key={user.id + "" + index}>
-                    <h3>{user.first_name}</h3>
-                    <p>{user.id}</p>
-                    <img src={user.avatar} alt="" />
-                </div>
-            )
+            if (user.id != null && user.id != "") {
+                let card = (
+                    <div className="card" key={user.id + "" + index}>
+                        <div className="containerIcon">
+                            <div
+                                onClick={async e => EditCard(user)}>
+                                <img src={EditImg} alt="" />
+                            </div>
+                        </div>
+                        <h3>{user.first_name}</h3>
+                        <img src={user.avatar} alt="" />
+                        <p>{user.id}</p>
+                    </div>
+                )
 
-            container.push(card)
+                container.push(card)
 
+            }
         }
 
         return container;
 
     }
 
+    const EditCard = async (user) => {
+
+        if (user.id) {
+            setState(prevState => ({
+                ...prevState,
+                user: user
+            }))
+
+            openModal();
+        }
+
+    }
+
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
+
     return (
         <div className="Home"
-            onClick={e => {
-                console.log(state)
-            }}>
-            <h1>
+        >
+            <h1
+                onClick={e => {
+                    console.log(state)
+                }}>
                 Home
             </h1>
-
+            <EditUserModal user={state.user} isOpen={modalIsOpen} closeModal={closeModal} />
             <div className="listUsers">
                 {state.users.length > 0 && (
                     CreatUsersCards()
                 )}
             </div>
+
+
         </div>
     )
 }
